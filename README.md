@@ -23,9 +23,9 @@ Login de demonstração: `membro@exemplo.com` / `Senha@123` (ou `admin@exemplo.c
 - Idioma inicial: português (pt-BR); inglês (en-US) disponível nos controles da tela.
 - Tema inicial: escuro; tema claro disponível nos controles da tela.
 - Idioma e tema ficam em `localStorage`. Não armazene tokens ou dados de autenticação nessas preferências.
-- Área do aluno inclui visão geral, pagamentos e frequência, adaptados do layout e dos fluxos da demo RT Fitness.
+- Área do aluno inclui visão geral, pagamentos e frequência.
 - Plano, matrícula, unidades, pagamentos e entradas são demonstrativos e ficam em `src/features/home/data/demoPortalData.ts`. Nenhum pagamento é processado.
-- A identidade usa amarelo e preto, sem a marca RT Fitness. A demo é apenas referência visual e funcional.
+- A identidade usa amarelo e preto.
 - Mascote Miss Anilha fica em `public/images/miss-anilha.jpg`.
 
 ## Estrutura
