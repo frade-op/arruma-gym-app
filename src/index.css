@@ -7,6 +7,8 @@
   --color-brand-600: #ffd21c;
   --color-brand-700: #f4c400;
   --color-brand-foreground: #171715;
+  --color-brand-tint-background: var(--app-brand-tint-background);
+  --color-brand-tint-foreground: var(--app-brand-tint-foreground);
   --color-background: var(--app-background);
   --color-surface: var(--app-surface);
   --color-foreground: var(--app-foreground);
@@ -14,6 +16,8 @@
   --color-border: var(--app-border);
   --color-danger-surface: var(--app-danger-surface);
   --color-danger-foreground: var(--app-danger-foreground);
+  --color-success-background: var(--app-success-background);
+  --color-success-foreground: var(--app-success-foreground);
 }
 
 :root {
@@ -25,6 +29,10 @@
   --app-border: #e3e3dc;
   --app-danger-surface: #fef2f2;
   --app-danger-foreground: #b91c1c;
+  --app-brand-tint-background: #fff5c3;
+  --app-brand-tint-foreground: #735b00;
+  --app-success-background: #eaf5ec;
+  --app-success-foreground: #2e8a4c;
 }
 
 :root[data-theme="dark"] {
@@ -36,6 +44,10 @@
   --app-border: #30302d;
   --app-danger-surface: #450a0a;
   --app-danger-foreground: #fecaca;
+  --app-brand-tint-background: #453a06;
+  --app-brand-tint-foreground: #ffd21c;
+  --app-success-background: #17321e;
+  --app-success-foreground: #8bd19b;
 }
 
 body {

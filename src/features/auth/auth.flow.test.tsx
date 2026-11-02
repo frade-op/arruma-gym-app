@@ -76,8 +76,13 @@ describe("fluxo de autenticação", () => {
     await userEvent.type(screen.getByLabelText("Password"), "Senha@123");
     await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
     expect(await screen.findByRole("heading", { name: "Hello, Carlos Lima!" })).toBeInTheDocument();
-    expect(screen.getByText("Workouts this month")).toBeInTheDocument();
+    expect(screen.getByText("workouts in October")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole("link", { name: "View payment history" }));
+    expect(await screen.findByRole("heading", { name: "Payment history" })).toBeInTheDocument();
+    await userEvent.click(screen.getAllByRole("link", { name: "Attendance" })[0]);
+    expect(await screen.findByRole("heading", { name: "Workout history" })).toBeInTheDocument();
   });
 
   it("inicia em tema escuro e permite ativar tema claro", async () => {
@@ -87,5 +92,25 @@ describe("fluxo de autenticação", () => {
     await userEvent.click(await screen.findByRole("button", { name: "Ativar tema claro" }));
     expect(document.documentElement.dataset.theme).toBe("light");
     expect(localStorage.getItem("arruma-gym:theme")).toBe("light");
+  });
+
+  it("navega por pagamentos e frequência e filtra entradas por unidade", async () => {
+    renderApp("/login");
+    await fillAndSubmit("membro@exemplo.com", "Senha@123");
+
+    await userEvent.click(await screen.findByRole("link", { name: "Ver histórico de pagamentos" }));
+    expect(await screen.findByRole("heading", { name: "Pagamentos" })).toBeInTheDocument();
+    expect(screen.getByText("Musculação + Funcional")).toBeInTheDocument();
+    expect(screen.getByText("5 registros")).toBeInTheDocument();
+    expect(screen.getAllByText("R$ 119,90")).toHaveLength(6);
+
+    await userEvent.click(screen.getAllByRole("link", { name: "Frequência" })[0]);
+    expect(await screen.findByRole("heading", { name: "Histórico de treinos" })).toBeInTheDocument();
+    const unitFilter = screen.getByLabelText("Unidade");
+    expect(screen.getAllByRole("listitem")).toHaveLength(12);
+
+    await userEvent.selectOptions(unitFilter, "Jardim");
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(screen.getAllByText("Jardim", { selector: "strong" })).toHaveLength(2);
   });
 });

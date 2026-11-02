@@ -23,7 +23,9 @@ Demo login: `membro@exemplo.com` / `Senha@123` (or `admin@exemplo.com`).
 - Default language: Brazilian Portuguese (pt-BR); English (en-US) is available in the screen controls.
 - Default theme: dark; light theme is available in the screen controls.
 - Language and theme are stored in `localStorage`. Never store tokens or authentication data in these preferences.
-- The yellow-and-black identity takes visual inspiration from the RT Fitness demo. The demo is a visual and functional reference; its data and brand are not used.
+- The member area includes overview, payments, and attendance, adapted from the RT Fitness demo layout and workflows.
+- Plan, membership ID, gym locations, payments, and check-ins are sample data in `src/features/home/data/demoPortalData.ts`. No payments are processed.
+- The identity uses yellow and black without the RT Fitness brand. The demo is a visual and functional reference only.
 - The Miss Anilha mascot is stored at `public/images/miss-anilha.jpg`.
 
 ## Structure
