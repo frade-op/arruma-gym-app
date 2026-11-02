@@ -4,15 +4,18 @@ import { MemoryRouter } from "react-router-dom";
 import { AppRoutes } from "@/app/routes";
 import { AuthProvider } from "./components/AuthProvider";
 import { createMockAuthApi } from "./api/mockAuthApi";
+import { PreferencesProvider } from "@/shared/preferences/PreferencesProvider";
 
 function renderApp(path = "/") {
   const api = createMockAuthApi({ latencyMs: 0 });
   render(
-    <MemoryRouter initialEntries={[path]}>
-      <AuthProvider api={api}>
-        <AppRoutes />
-      </AuthProvider>
-    </MemoryRouter>,
+    <PreferencesProvider>
+      <MemoryRouter initialEntries={[path]}>
+        <AuthProvider api={api}>
+          <AppRoutes />
+        </AuthProvider>
+      </MemoryRouter>
+    </PreferencesProvider>,
   );
 }
 
@@ -24,6 +27,12 @@ async function fillAndSubmit(email: string, password: string) {
 }
 
 describe("fluxo de autenticação", () => {
+  beforeEach(() => {
+    localStorage.clear();
+    document.documentElement.lang = "pt-BR";
+    document.documentElement.dataset.theme = "dark";
+  });
+
   it("redireciona visitante para o login", async () => {
     renderApp("/");
     expect(await screen.findByRole("heading", { name: /bem-vindo/i })).toBeInTheDocument();
@@ -49,5 +58,34 @@ describe("fluxo de autenticação", () => {
 
     await userEvent.click(screen.getByRole("button", { name: /sair/i }));
     await waitFor(() => expect(screen.getByRole("heading", { name: /bem-vindo/i })).toBeInTheDocument());
+  });
+
+  it("permite trocar idioma e mostra validações traduzidas", async () => {
+    renderApp("/login");
+    await userEvent.click(await screen.findByRole("button", { name: "Mudar idioma para inglês" }));
+
+    expect(screen.getByRole("heading", { name: "Welcome back" })).toBeInTheDocument();
+    expect(screen.getByLabelText("Email")).toBeInTheDocument();
+    expect(document.documentElement.lang).toBe("en-US");
+
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    expect(await screen.findByText("Enter your email.")).toBeInTheDocument();
+    expect(screen.getByText("Enter your password.")).toBeInTheDocument();
+
+    await userEvent.type(screen.getByLabelText("Email"), "membro@exemplo.com");
+    await userEvent.type(screen.getByLabelText("Password"), "Senha@123");
+    await userEvent.click(screen.getByRole("button", { name: "Sign in" }));
+    expect(await screen.findByRole("heading", { name: "Hello, Carlos Lima!" })).toBeInTheDocument();
+    expect(screen.getByText("Workouts this month")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
+  });
+
+  it("inicia em tema escuro e permite ativar tema claro", async () => {
+    renderApp("/login");
+    expect(document.documentElement.dataset.theme).toBe("dark");
+
+    await userEvent.click(await screen.findByRole("button", { name: "Ativar tema claro" }));
+    expect(document.documentElement.dataset.theme).toBe("light");
+    expect(localStorage.getItem("arruma-gym:theme")).toBe("light");
   });
 });

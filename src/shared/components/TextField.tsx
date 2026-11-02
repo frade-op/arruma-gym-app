@@ -13,7 +13,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
   const errorId = `${id}-error`;
   return (
     <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-slate-700">
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-foreground">
         {label}
       </label>
       <input
@@ -21,13 +21,13 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         id={id}
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? errorId : undefined}
-        className={`block w-full rounded-lg border bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition focus:ring-2 focus:ring-brand-500 ${
-          error ? "border-red-500" : "border-slate-300"
+        className={`block w-full rounded-lg border bg-surface px-3 py-2.5 text-sm text-foreground shadow-sm outline-none transition focus:ring-2 focus:ring-brand-500 ${
+          error ? "border-red-500" : "border-border"
         } ${className}`}
         {...rest}
       />
       {error && (
-        <p id={errorId} className="mt-1 text-sm text-red-600">
+        <p id={errorId} className="mt-1 text-sm text-danger-foreground">
           {error}
         </p>
       )}

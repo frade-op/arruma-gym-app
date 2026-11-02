@@ -1,6 +1,6 @@
 # Arruma Gym App
 
-Frontend em React com autenticação, tela de login e home. Backend ainda não existe (previsto: Spring Boot), então tudo usa **dados falsos**.
+Portal de academia em React. Interface disponível em português (pt-BR) e inglês (en-US), com tema escuro por padrão e opção de tema claro.
 
 ## Stack
 
@@ -10,40 +10,48 @@ React 19 · TypeScript · Vite · Tailwind CSS v4 · React Router · React Hook 
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm test           # testes unitários
+npm run dev
+npm test
 npm run typecheck
 npm run build
 ```
 
 Login de demonstração: `membro@exemplo.com` / `Senha@123` (ou `admin@exemplo.com`).
 
+## Preferências e identidade
+
+- Idioma inicial: português (pt-BR); inglês (en-US) disponível nos controles da tela.
+- Tema inicial: escuro; tema claro disponível nos controles da tela.
+- Idioma e tema ficam em `localStorage`. Não armazene tokens ou dados de autenticação nessas preferências.
+- Identidade visual usa amarelo e preto, inspirada na demo RT Fitness. A demo serve como referência visual e funcional; seus dados e marca não são usados.
+- Mascote Miss Anilha fica em `public/images/miss-anilha.jpg`.
+
 ## Estrutura
 
-```
+```text
 src/
   app/        providers e rotas
-  features/   um diretório por domínio (auth, home, ...)
-    auth/     api/, components/, hooks/, pages/, schemas.ts, types.ts
-  shared/     componentes e utilitários sem regra de negócio
-  test/       setup dos testes
+  features/   domínios (auth, home, ...)
+  shared/     componentes, utilitários e preferências sem regra de negócio
 ```
 
-Novas funcionalidades entram como nova pasta em `features/`. Código usado por mais de uma feature vai para `shared/`.
+Novas funcionalidades entram em `features/`. Código genérico compartilhado fica em `shared/`. A arquitetura deve poder evoluir para atender mais de uma academia, mas modelo de tenant, permissões e isolamento de dados ficam fora do escopo até receber regras de negócio.
 
 ## Segurança da autenticação
 
-- Access token **somente em memória** (nunca `localStorage`), renovado antes de expirar.
+- Access token somente em memória; nunca em `localStorage`.
 - Rotas privadas protegidas por `ProtectedRoute`; login por `GuestRoute`.
-- Redirecionamento pós-login validado (`getSafeRedirect`) contra open redirect.
-- Validação de entrada com Zod; mensagem de erro genérica (não revela se o e-mail existe).
+- Redirecionamento pós-login validado por `getSafeRedirect`.
+- Validação de entrada com Zod; mensagens de erro de login são genéricas nos dois idiomas.
 - Mock simula bloqueio após 5 tentativas falhas (30 s).
-- CSP injetado no build; React escapa saída por padrão (sem `dangerouslySetInnerHTML`).
+- CSP injetado no build; React escapa saída por padrão.
 
 ## Integrando o backend (Spring Boot)
 
-1. Implemente a interface `AuthApi` ([authApi.ts](src/features/auth/api/authApi.ts)) com chamadas HTTP.
-2. Troque o export em [api/index.ts](src/features/auth/api/index.ts).
+1. Implemente `AuthApi` em `src/features/auth/api/authApi.ts` com chamadas HTTP.
+2. Troque o export em `src/features/auth/api/index.ts`.
 3. No backend: refresh token em cookie `HttpOnly; Secure; SameSite=Strict`, access token de curta duração, rate limit e hash de senha (BCrypt/Argon2), CORS restrito, headers de segurança e CSRF conforme o desenho do cookie.
 
-O mock guarda um "refresh token" em `sessionStorage` apenas para simular persistência; **não** é seguro e deve sumir com o backend real.
+O mock guarda um refresh token em `sessionStorage` apenas para simular persistência; não é seguro e deve sumir com o backend real.
+
+English documentation: [README.en.md](./README.en.md).

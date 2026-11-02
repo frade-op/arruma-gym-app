@@ -7,8 +7,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: "bg-brand-600 text-white hover:bg-brand-700 focus-visible:outline-brand-600",
-  ghost: "text-slate-700 hover:bg-slate-100 focus-visible:outline-slate-400",
+  primary: "bg-brand-600 text-brand-foreground hover:bg-brand-700 focus-visible:outline-brand-600",
+  ghost: "text-foreground hover:bg-background focus-visible:outline-muted",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
