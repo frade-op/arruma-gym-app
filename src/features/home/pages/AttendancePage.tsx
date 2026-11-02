@@ -1,37 +1,40 @@
 import { Activity, Clock3, MapPin } from "lucide-react";
-import { useState } from "react";
 import { CheckinList } from "@/features/home/components/CheckinList";
 import {
-  demoPortalData,
   getDemoMonth,
-  getDemoUnits,
-  getMostVisitedDemoUnit,
-} from "@/features/home/data/demoPortalData";
+  getEstablishmentCheckins,
+  getMostVisitedEstablishment,
+} from "@/features/establishments/data/establishments";
+import { useEstablishments } from "@/features/establishments/EstablishmentsProvider";
 import { usePreferences } from "@/shared/preferences/PreferencesProvider";
 
 export function AttendancePage() {
   const { language, t } = usePreferences();
-  const [selectedUnit, setSelectedUnit] = useState("all");
-  const filteredCheckins =
-    selectedUnit === "all"
-      ? demoPortalData.checkins
-      : demoPortalData.checkins.filter(({ unit }) => unit === selectedUnit);
-  const mostRecent = demoPortalData.checkins[0];
+  const { selectedEstablishmentId, selectedEstablishments } = useEstablishments();
+  const checkins = getEstablishmentCheckins(selectedEstablishments);
+  const establishment = selectedEstablishments[0];
+  const mostRecent = checkins[0];
+  const period = selectedEstablishments.find(({ period: itemPeriod }) => itemPeriod)?.period;
+  const establishmentSummary = selectedEstablishmentId === "all"
+    ? getMostVisitedEstablishment(selectedEstablishments)
+    : establishment.name;
   const stats = [
     {
       icon: Activity,
-      value: String(demoPortalData.checkins.length),
-      label: t("portal.attendance.workoutsIn", { month: getDemoMonth(language) }),
+      value: String(checkins.length),
+      label: t("portal.attendance.workoutsIn", {
+        month: period ? getDemoMonth({ period }, language) : t("establishments.noData"),
+      }),
     },
     {
       icon: Clock3,
-      value: mostRecent.time,
+      value: mostRecent?.time ?? t("establishments.noData"),
       label: t("portal.attendance.lastWorkout"),
     },
     {
       icon: MapPin,
-      value: getMostVisitedDemoUnit(),
-      label: t("portal.attendance.mostVisited"),
+      value: establishmentSummary,
+      label: t("portal.attendance.selectedEstablishment"),
     },
   ];
 
@@ -69,22 +72,9 @@ export function AttendancePage() {
             <p className="mb-1 text-[10px] font-bold tracking-widest text-muted">{t("portal.attendance.entries")}</p>
             <h2 className="text-xl font-bold">{t("portal.attendance.history")}</h2>
           </div>
-          <label className="grid gap-1.5 text-xs font-semibold text-muted">
-            {t("portal.unit")}
-            <select
-              className="min-w-44 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
-              value={selectedUnit}
-              onChange={(event) => setSelectedUnit(event.target.value)}
-            >
-              <option value="all">{t("portal.attendance.allUnits")}</option>
-              {getDemoUnits().map((unit) => (
-                <option key={unit} value={unit}>{unit}</option>
-              ))}
-            </select>
-          </label>
         </div>
-        {filteredCheckins.length > 0 ? (
-          <CheckinList checkins={filteredCheckins} />
+        {checkins.length > 0 ? (
+          <CheckinList checkins={checkins} />
         ) : (
           <p className="rounded-xl border border-border bg-surface p-6 text-center text-sm text-muted">
             {t("portal.attendance.empty")}

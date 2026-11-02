@@ -24,8 +24,13 @@ Login de demonstração: `membro@exemplo.com` / `Senha@123` (ou `admin@exemplo.c
 - Tema inicial: escuro; tema claro disponível nos controles da tela.
 - Idioma e tema ficam em `localStorage`. Não armazene tokens ou dados de autenticação nessas preferências.
 - Área do aluno inclui visão geral, pagamentos e frequência.
-- Plano, matrícula, unidades, pagamentos e entradas são demonstrativos e ficam em `src/features/home/data/demoPortalData.ts`. Nenhum pagamento é processado.
+- Planos, matrículas, pagamentos e frequências são demonstrativos e ficam em `src/features/establishments/data/establishments.ts`. Nenhum pagamento é processado.
+- Base Ativa Ermo usa mensalidade; Energia Jardim e Movimento Centro cobram por diária, vinculada às frequências demonstrativas.
 - A identidade usa amarelo e preto.
+- Gestão inclui três academias fictícias. O portal abre com visão geral de todas e permite selecionar uma academia.
+- Na gestão, academias podem ser adicionadas por conexão (com contato por e-mail quando não listadas) ou cadastradas manualmente pelo nome. Cadastros manuais começam sem dados de pagamentos e frequência.
+- Cadastros manuais desta demonstração ficam em memória e não persistem após recarregar a página.
+- Pedidos de conexão são apenas demonstrativos; nenhum e-mail é enviado.
 - Mascote Miss Anilha fica em `public/images/miss-anilha.jpg`.
 
 ## Estrutura
@@ -33,7 +38,7 @@ Login de demonstração: `membro@exemplo.com` / `Senha@123` (ou `admin@exemplo.c
 ```text
 src/
   app/        providers e rotas
-  features/   domínios (auth, home, ...)
+  features/   domínios (auth, home, establishments, ...)
   shared/     componentes, utilitários e preferências sem regra de negócio
 ```
 

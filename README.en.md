@@ -24,7 +24,12 @@ Demo login: `membro@exemplo.com` / `Senha@123` (or `admin@exemplo.com`).
 - Default theme: dark; light theme is available in the screen controls.
 - Language and theme are stored in `localStorage`. Never store tokens or authentication data in these preferences.
 - The member area includes overview, payments, and attendance.
-- Plan, membership ID, gym locations, payments, and check-ins are sample data in `src/features/home/data/demoPortalData.ts`. No payments are processed.
+- Plan, membership ID, gyms, payments, and check-ins are sample data in `src/features/establishments/data/establishments.ts`. No payments are processed.
+- Base Ativa Ermo uses a monthly plan; Energia Jardim and Movimento Centro use daily rates tied to sample attendance.
+- Management includes three fictional gyms. The portal defaults to an overview of all gyms and lets users select one.
+- Gyms can be added through a connection (with a contact email when unlisted) or entered manually by name. Manual entries start without payment or attendance data.
+- Manual entries in this demo remain in memory and do not persist after reloading the page.
+- Connection requests are demo-only; no email is sent.
 - The identity uses yellow and black.
 - The Miss Anilha mascot is stored at `public/images/miss-anilha.jpg`.
 
@@ -33,7 +38,7 @@ Demo login: `membro@exemplo.com` / `Senha@123` (or `admin@exemplo.com`).
 ```text
 src/
   app/        providers and routes
-  features/   domains (auth, home, ...)
+  features/   domains (auth, home, establishments, ...)
   shared/     components, utilities, and preferences without business rules
 ```
 

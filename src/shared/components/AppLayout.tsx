@@ -1,5 +1,6 @@
 import {
   ChartNoAxesColumn,
+  Building2,
   Dumbbell,
   LayoutDashboard,
   LogOut,
@@ -7,7 +8,10 @@ import {
 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { demoPortalData } from "@/features/home/data/demoPortalData";
+import {
+  ALL_ESTABLISHMENTS_ID,
+  useEstablishments,
+} from "@/features/establishments/EstablishmentsProvider";
 import { Button } from "@/shared/components/Button";
 import { PreferencesControls } from "@/shared/components/PreferencesControls";
 import { usePreferences } from "@/shared/preferences/PreferencesProvider";
@@ -15,16 +19,22 @@ import { usePreferences } from "@/shared/preferences/PreferencesProvider";
 export function AppLayout() {
   const { user, logout } = useAuth();
   const { t } = usePreferences();
+  const {
+    establishments,
+    selectedEstablishmentId,
+    setSelectedEstablishmentId,
+  } = useEstablishments();
   const navItems = [
     { to: "/", label: t("nav.overview"), mobileLabel: t("nav.home"), icon: LayoutDashboard },
     { to: "/payments", label: t("nav.payments"), mobileLabel: t("nav.payments"), icon: WalletCards },
     { to: "/attendance", label: t("nav.attendance"), mobileLabel: t("nav.attendance"), icon: ChartNoAxesColumn },
+    { to: "/establishments", label: t("nav.establishments"), mobileLabel: t("nav.establishmentsShort"), icon: Building2 },
   ];
 
   const navigation = (mobile = false) => (
     <nav
       aria-label={t("nav.label")}
-      className={mobile ? "grid grid-cols-3 gap-1" : "grid gap-1.5"}
+      className={mobile ? "grid grid-cols-4 gap-1" : "grid gap-1.5"}
     >
       {navItems.map(({ to, label, mobileLabel, icon: Icon }) => (
         <NavLink
@@ -74,19 +84,29 @@ export function AppLayout() {
       </aside>
 
       <header className="sticky top-0 z-10 border-b border-border bg-surface">
-        <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6 lg:px-10">
-          <NavLink to="/" className="flex items-center gap-2 font-bold md:hidden">
+        <div className="flex h-16 items-center justify-between gap-2 px-3 sm:gap-3 sm:px-6 lg:px-10">
+          <NavLink to="/" className="flex shrink-0 items-center gap-2 font-bold md:hidden">
             <Dumbbell className="h-5 w-5 text-brand-600" aria-hidden />
-            Arruma Gym
+            <span className="hidden sm:inline">Arruma Gym</span>
           </NavLink>
-          <div className="ml-auto flex items-center gap-2 sm:gap-4">
-            <span className="hidden items-center gap-2 text-xs font-semibold text-muted sm:inline-flex">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              {t("topbar.unit", { unit: demoPortalData.unit })}
-            </span>
-            <span className="hidden h-7 border-l border-border sm:block" />
+          <div className="ml-auto flex min-w-0 items-center gap-1.5 sm:gap-3">
+            <label className="sr-only" htmlFor="active-establishment">
+              {t("establishments.selectorLabel")}
+            </label>
+            <select
+              id="active-establishment"
+              aria-label={t("establishments.selectorLabel")}
+              value={selectedEstablishmentId}
+              onChange={(event) => setSelectedEstablishmentId(event.target.value)}
+              className="max-w-32 rounded-lg border border-border bg-background px-2 py-2 text-xs font-semibold text-foreground sm:max-w-52 sm:px-3 sm:text-sm"
+            >
+              <option value={ALL_ESTABLISHMENTS_ID}>{t("establishments.all")}</option>
+              {establishments.map(({ id, name }) => (
+                <option key={id} value={id}>{name}</option>
+              ))}
+            </select>
             <PreferencesControls />
-            <span className="hidden max-w-36 truncate text-sm font-semibold sm:block">{user?.name}</span>
+            <span className="hidden max-w-36 truncate text-sm font-semibold lg:block">{user?.name}</span>
             <Button
               variant="ghost"
               onClick={() => void logout()}
